@@ -14,7 +14,6 @@ namespace MuHua.Outline {
             OutlineBlendRenderPass = new ROOutlineBlendRenderPass();
             OutlineBlendRenderPass.renderPassEvent = renderPassEvent;
             ROModel.I.OutlineColor = OutlineColor;
-            Debug.Log("sss");
         }
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData) {
             OutlineBlendRenderPass.Setup();
