@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.muhua.outline": {
-      "version": "file:RenderingOutline",
+      "version": "file:Outline",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
