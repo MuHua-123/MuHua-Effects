@@ -1,14 +1,5 @@
 {
   "dependencies": {
-    "com.muhua.outline": {
-      "version": "file:Outline",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.unity.render-pipelines.universal": "14.0.11",
-        "com.unity.render-pipelines.core": "14.0.11"
-      }
-    },
     "com.unity.burst": {
       "version": "1.8.15",
       "depth": 1,
