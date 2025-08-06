@@ -173,7 +173,7 @@
         },
         "preventRotation": false
     },
-    "m_Path": "MuHua/PostProcessing",
+    "m_Path": "MuHua/Outline",
     "m_GraphPrecision": 1,
     "m_PreviewMode": 2,
     "m_OutputNode": {
