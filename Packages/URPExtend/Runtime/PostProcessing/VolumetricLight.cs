@@ -10,6 +10,11 @@ namespace MuHua {
 		BilateralFilter
 	}
 
+	[System.Serializable]
+	public sealed class EnumModeParameter : VolumeParameter<BlurMode> {
+		public EnumModeParameter(BlurMode value, bool overrideState = false) : base(value, overrideState) { }
+	}
+
 	/// <summary>
 	/// 自定义体积光组件
 	/// </summary>
@@ -133,11 +138,6 @@ namespace MuHua {
 			material.SetFloat("_Space_Sigma", Space_S.value);
 			material.SetFloat("_Range_Sigma", Space_R.value);
 			material.SetFloat("_KernelSize", KernelSize.value);
-
 		}
-	}
-	[System.Serializable]
-	public sealed class EnumModeParameter : VolumeParameter<BlurMode> {
-		public EnumModeParameter(BlurMode value, bool overrideState = false) : base(value, overrideState) { }
 	}
 }

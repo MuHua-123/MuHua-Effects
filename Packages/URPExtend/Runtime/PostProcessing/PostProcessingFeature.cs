@@ -12,7 +12,7 @@ namespace MuHua {
 		// 开启此选项渲染法线图
 		public bool NormalTexture = false;
 		/// <summary> 体积光着色器 </summary>
-		[HideInInspector] public Shader volumetricShader;
+		public Shader volumetricShader;
 
 		// 获取后处理基类列表
 		private List<PostProcessing> postProcessings;
@@ -25,14 +25,6 @@ namespace MuHua {
 		private DepthNormalsPass depthNormalsPass;
 
 		public override void Create() {
-			// 自动查找并赋值 volumetricShader
-			if (volumetricShader == null) {
-				volumetricShader = Shader.Find("MuHua/PostProcessing/VolumetricShader");
-				if (volumetricShader == null) {
-					Debug.LogWarning("未找到MuHua/PostProcessing/VolumetricShader，请确保 Shader 已正确导入项目。");
-				}
-			}
-
 			var stack = VolumeManager.instance.stack;
 			// 获取 所有继承自 PostProcessing 类型的Volume组件 并增加到列表中
 			postProcessings = VolumeManager.instance.baseComponentTypeArray

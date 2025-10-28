@@ -6,9 +6,12 @@ using UnityEngine.Rendering.Universal;
 
 namespace MuHua {
 	/// <summary>
-	/// 轮廓渲染设置
+	/// 轮廓 - 渲染通道
 	/// </summary>
-	public class OutlineSettings {
+	public class OutlinePass : ScriptableRenderPass {
+		/// <summary> 分析器标签 </summary>
+		public const string ProfilerTag = "Outline";
+
 		/// <summary> 辅助材质 </summary>
 		public Material unlit;
 		/// <summary> 轮廓材质 </summary>
@@ -16,18 +19,7 @@ namespace MuHua {
 		/// <summary> 混合材质 </summary>
 		public Material outlineBlend;
 		/// <summary> 渲染对象 </summary>
-		public Renderer[] renderObjs = new Renderer[0];
-		/// <summary> 渲染事件 </summary>
-		public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
-	}
-	/// <summary>
-	/// 轮廓渲染通道
-	/// </summary>
-	public class OutlinePass : ScriptableRenderPass {
-		public const string ProfilerTag = "Outline";
-
-		/// <summary> 渲染设置 </summary>
-		public OutlineSettings settings;
+		public List<Renderer> renderObjs = new();
 
 		/// <summary> 临时纹理 </summary>
 		public RTHandle tempRTHandle;
@@ -35,17 +27,16 @@ namespace MuHua {
 		public RTHandle outlineRTHandle;
 
 		/// <summary> 渲染前设置 </summary>
-		public void Setup(OutlineSettings settings, in RenderingData renderingData) {
-			this.settings = settings;
-			renderPassEvent = settings.renderPassEvent;
+		public void Setup(in RenderingData renderingData) {
 			RenderTextureDescriptor descriptor = renderingData.cameraData.cameraTargetDescriptor;
 			descriptor.depthBufferBits = (int)DepthBits.None;
 			RenderingUtils.ReAllocateIfNeeded(ref outlineRTHandle, descriptor, name: "OutlineRT");
-			RenderingUtils.ReAllocateIfNeeded(ref tempRTHandle, descriptor, name: "TempRT");
+			RenderingUtils.ReAllocateIfNeeded(ref tempRTHandle, descriptor, name: "OutlineTempRT");
 		}
 
 		public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData) {
-			if (renderingData.cameraData.cameraType == CameraType.SceneView || renderingData.cameraData.cameraType == CameraType.Preview) return;
+			if (renderingData.cameraData.cameraType == CameraType.SceneView) { return; }
+			if (renderingData.cameraData.cameraType == CameraType.Preview) { return; }
 
 			CommandBuffer command = CommandBufferPool.Get(ProfilerTag);
 
@@ -54,16 +45,16 @@ namespace MuHua {
 			// 清除纹理内容
 			CoreUtils.ClearRenderTarget(command, ClearFlag.All, Color.clear);
 			// 绘制渲染物体
-			DrawRenderer(command, settings.unlit);
+			DrawRenderer(command, unlit);
 			// 设置tempRTHandle为outline的主纹理
-			settings.outline.SetTexture("_MainTex", tempRTHandle);
+			outline.SetTexture("_MainTex", tempRTHandle);
 			// 渲染出轮廓
-			Blitter.BlitTexture(command, tempRTHandle, outlineRTHandle, settings.outline, 0);
+			Blitter.BlitTexture(command, tempRTHandle, outlineRTHandle, outline, 0);
 
 			// 设置outlineRTHandle为blend的主纹理
-			settings.outlineBlend.SetTexture("_MainTex", outlineRTHandle);
+			outlineBlend.SetTexture("_MainTex", outlineRTHandle);
 			// 把缓冲区的内容渲染到renderingData
-			Blit(command, ref renderingData, settings.outlineBlend, 0);
+			Blit(command, ref renderingData, outlineBlend, 0);
 
 			// 执行缓冲区
 			context.ExecuteCommandBuffer(command);
@@ -73,17 +64,17 @@ namespace MuHua {
 			outlineRTHandle?.Release();
 		}
 
-		public void DrawRenderer(CommandBuffer command, Material material) {
-			for (int i = 0; i < settings.renderObjs.Length; i++) {
-				Renderer renderer = settings.renderObjs[i];
-				if (renderer == null) { continue; }
-
-				// 遍历所有的子网格
-				for (int subMeshIndex = 0; subMeshIndex < renderer.sharedMaterials.Length; subMeshIndex++) {
-					command.DrawRenderer(renderer, material, subMeshIndex, 0);
-				}
+		private void DrawRenderer(CommandBuffer command, Material material) {
+			renderObjs.RemoveAll(obj => obj == null);
+			renderObjs.ForEach(renderer => DrawRenderer(command, material, renderer));
+		}
+		private void DrawRenderer(CommandBuffer command, Material material, Renderer renderer) {
+			// 遍历所有的子网格
+			int maxIndex = renderer.sharedMaterials.Length;
+			// 遍历所有的子网格
+			for (int subMeshIndex = 0; subMeshIndex < maxIndex; subMeshIndex++) {
+				command.DrawRenderer(renderer, material, subMeshIndex, 0);
 			}
 		}
-
 	}
 }

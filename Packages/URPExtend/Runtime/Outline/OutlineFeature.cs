@@ -6,42 +6,34 @@ using UnityEngine.Rendering.Universal;
 
 namespace MuHua {
 	/// <summary>
-	/// 渲染轮廓功能
+	/// 轮廓 - 渲染功能
 	/// </summary>
 	public class OutlineFeature : ScriptableRendererFeature {
+		/// <summary> 辅助材质 </summary>
 		[Tooltip("辅助材质")] public Material unlit;
+		/// <summary> 轮廓材质 </summary>
 		[Tooltip("轮廓材质")] public Material outline;
+		/// <summary> 混合材质 </summary>
 		[Tooltip("混合材质")] public Material outlineBlend;
 		/// <summary> 渲染Event </summary>
 		public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
-
-		/// <summary> 渲染对象 </summary>
-		[HideInInspector] public List<Renderer> RenderObjs = new List<Renderer>();
 		/// <summary> 是否有效 </summary>
 		public bool IsValid => unlit != null && outline != null && outlineBlend != null;
 
 		/// <summary> 渲染通道 </summary>
-		private OutlinePass outlinePass;
-		/// <summary> 渲染设置 </summary>
-		private OutlineSettings settings;
+		private OutlinePass outlinePass = new();
 
-		public override void Create() {
-			outlinePass = new OutlinePass();
-			settings = new OutlineSettings();
-		}
+		public override void Create() { }
 
 		public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData) {
 			if (!IsValid) { return; }
 
-			RenderObjs.RemoveAll(obj => obj == null);
+			outlinePass.unlit = unlit;
+			outlinePass.outline = outline;
+			outlinePass.outlineBlend = outlineBlend;
+			outlinePass.renderPassEvent = renderPassEvent;
 
-			settings.unlit = unlit;
-			settings.outline = outline;
-			settings.outlineBlend = outlineBlend;
-			settings.renderObjs = RenderObjs.ToArray();
-			settings.renderPassEvent = renderPassEvent;
-
-			outlinePass.Setup(settings, renderingData);
+			outlinePass.Setup(renderingData);
 			renderer.EnqueuePass(outlinePass);
 			Dispose();
 		}
@@ -49,21 +41,23 @@ namespace MuHua {
 		/// <summary> 添加到渲染队列 </summary>
 		public void Add(Renderer renderer, bool isClear) {
 			if (isClear) { Clear(); }
-			if (!RenderObjs.Contains(renderer)) { RenderObjs.Add(renderer); }
+			if (outlinePass.renderObjs.Contains(renderer)) { return; }
+			outlinePass.renderObjs.Add(renderer);
 		}
 		/// <summary> 添加到渲染队列 </summary>
 		public void Add(Renderer[] renderers, bool isClear) {
 			if (isClear) { Clear(); }
-			RenderObjs.AddRange(renderers);
+			outlinePass.renderObjs.AddRange(renderers);
 		}
 		/// <summary> 移出渲染队列 </summary>
 		public void Remove(Renderer renderer) {
-			if (RenderObjs.Contains(renderer)) { RenderObjs.Remove(renderer); }
+			if (!outlinePass.renderObjs.Contains(renderer)) { return; }
+			outlinePass.renderObjs.Remove(renderer);
 		}
 		/// <summary> 清空队列 </summary>
 		public void Clear() {
-			RenderObjs?.Clear();
-			RenderObjs = new List<Renderer>();
+			outlinePass.renderObjs?.Clear();
+			outlinePass.renderObjs = new List<Renderer>();
 		}
 	}
 }

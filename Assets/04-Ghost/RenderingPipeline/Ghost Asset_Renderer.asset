@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: VolumetricLight Asset_Renderer
+  m_Name: Ghost Asset_Renderer
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7, type: 3}
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
-  - {fileID: 1493165591496375628}
-  m_RendererFeatureMap: 4c3dfabf31cab814
+  - {fileID: 3436931183076245933}
+  m_RendererFeatureMap: ad01b98cb36eb22f
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -56,7 +56,7 @@ MonoBehaviour:
   m_CopyDepthMode: 1
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
---- !u!114 &1493165591496375628
+--- !u!114 &3436931183076245933
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,9 +65,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e52e4639f0ffd0418c20f02182c5d7a, type: 3}
-  m_Name: PostProcessingFeature
+  m_Script: {fileID: 11500000, guid: 6cf77b0f8701a7c4c86e2abd7223af5e, type: 3}
+  m_Name: GhostFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  NormalTexture: 1
-  volumetricShader: {fileID: 4800000, guid: 6cb457b7b4b0504468b48f41bf8ba781, type: 3}
+  blend: {fileID: 2100000, guid: 3072a0dba7e31b44fa17c00ffc0b1b57, type: 2}
+  renderPassEvent: 600
+  RenderObjs:
+  - {fileID: 0}
