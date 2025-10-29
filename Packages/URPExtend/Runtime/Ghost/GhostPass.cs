@@ -31,6 +31,28 @@ namespace MuHua {
 			CommandBufferPool.Release(command);
 		}
 
+		/// <summary> 添加到渲染队列 </summary>
+		public void Add(Renderer renderer, bool isClear) {
+			if (isClear) { Clear(); }
+			if (renderObjs.Contains(renderer)) { return; }
+			renderObjs.Add(renderer);
+		}
+		/// <summary> 添加到渲染队列 </summary>
+		public void Add(Renderer[] renderers, bool isClear) {
+			if (isClear) { Clear(); }
+			renderObjs.AddRange(renderers);
+		}
+		/// <summary> 移出渲染队列 </summary>
+		public void Remove(Renderer renderer) {
+			if (!renderObjs.Contains(renderer)) { return; }
+			renderObjs.Remove(renderer);
+		}
+		/// <summary> 清空队列 </summary>
+		public void Clear() {
+			renderObjs?.Clear();
+			renderObjs = new List<Renderer>();
+		}
+
 		private void DrawRenderer(CommandBuffer command) {
 			renderObjs.RemoveAll(obj => obj == null);
 			renderObjs.ForEach(renderer => DrawRenderer(command, renderer));

@@ -30,25 +30,12 @@ namespace MuHua {
 		}
 
 		/// <summary> 添加到渲染队列 </summary>
-		public void Add(Renderer renderer, bool isClear) {
-			if (isClear) { Clear(); }
-			if (ghostPass.renderObjs.Contains(renderer)) { return; }
-			ghostPass.renderObjs.Add(renderer);
-		}
+		public void Add(Renderer renderer, bool isClear) => ghostPass.Add(renderer, isClear);
 		/// <summary> 添加到渲染队列 </summary>
-		public void Add(Renderer[] renderers, bool isClear) {
-			if (isClear) { Clear(); }
-			ghostPass.renderObjs.AddRange(renderers);
-		}
+		public void Add(Renderer[] renderers, bool isClear) => ghostPass.Add(renderers, isClear);
 		/// <summary> 移出渲染队列 </summary>
-		public void Remove(Renderer renderer) {
-			if (!ghostPass.renderObjs.Contains(renderer)) { return; }
-			ghostPass.renderObjs.Remove(renderer);
-		}
+		public void Remove(Renderer renderer) => ghostPass.Remove(renderer);
 		/// <summary> 清空队列 </summary>
-		public void Clear() {
-			ghostPass.renderObjs?.Clear();
-			ghostPass.renderObjs = new List<Renderer>();
-		}
+		public void Clear() => ghostPass.Clear();
 	}
 }

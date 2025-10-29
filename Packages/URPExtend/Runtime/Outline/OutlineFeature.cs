@@ -39,25 +39,12 @@ namespace MuHua {
 		}
 
 		/// <summary> 添加到渲染队列 </summary>
-		public void Add(Renderer renderer, bool isClear) {
-			if (isClear) { Clear(); }
-			if (outlinePass.renderObjs.Contains(renderer)) { return; }
-			outlinePass.renderObjs.Add(renderer);
-		}
+		public void Add(Renderer renderer, bool isClear) => outlinePass.Add(renderer, isClear);
 		/// <summary> 添加到渲染队列 </summary>
-		public void Add(Renderer[] renderers, bool isClear) {
-			if (isClear) { Clear(); }
-			outlinePass.renderObjs.AddRange(renderers);
-		}
+		public void Add(Renderer[] renderers, bool isClear) => outlinePass.Add(renderers, isClear);
 		/// <summary> 移出渲染队列 </summary>
-		public void Remove(Renderer renderer) {
-			if (!outlinePass.renderObjs.Contains(renderer)) { return; }
-			outlinePass.renderObjs.Remove(renderer);
-		}
+		public void Remove(Renderer renderer) => outlinePass.Remove(renderer);
 		/// <summary> 清空队列 </summary>
-		public void Clear() {
-			outlinePass.renderObjs?.Clear();
-			outlinePass.renderObjs = new List<Renderer>();
-		}
+		public void Clear() => outlinePass.Clear();
 	}
 }
