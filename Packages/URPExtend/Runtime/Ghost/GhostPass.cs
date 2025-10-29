@@ -46,7 +46,7 @@ namespace MuHua {
 		}
 	}
 	/// <summary>
-	/// 材质转换
+	/// 材质转换器
 	/// </summary>
 	public interface MaterialConversion {
 		public (Material, List<int>) To(Material original);
