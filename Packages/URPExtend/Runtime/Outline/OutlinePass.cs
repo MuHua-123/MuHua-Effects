@@ -47,12 +47,12 @@ namespace MuHua {
 			// 绘制渲染物体
 			DrawRenderer(command, unlit);
 			// 设置tempRTHandle为outline的主纹理
-			outline.SetTexture("_MainTex", tempRTHandle);
+			outline.mainTexture = tempRTHandle;
 			// 渲染出轮廓
 			Blitter.BlitTexture(command, tempRTHandle, outlineRTHandle, outline, 0);
 
 			// 设置outlineRTHandle为blend的主纹理
-			outlineBlend.SetTexture("_MainTex", outlineRTHandle);
+			outlineBlend.mainTexture = outlineRTHandle;
 			// 把缓冲区的内容渲染到renderingData
 			Blit(command, ref renderingData, outlineBlend, 0);
 
